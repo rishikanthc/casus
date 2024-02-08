@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "casus"
+version = "0.0.1"
+description = ""
+authors = ["Rishikanth Chandrasekaran <r3chandr@ucsd.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+jax = "*"
+jaxlib = "*"
+# jaxlib = {version = "^0.4.23+cuda11.cudnn86", source = "jax"} #uncomment for cuda support
+equinox = "*"
+numpy = "*"
+loguru = "*"
+einops = "^0.7.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+pyright = "*"
+ruff = "*"
+pre-commit = "*"
+pytest = "*"
+fire = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+venvPath = "/Users/rishi/miniconda3/envs"
+venv = "casus"
+useLibraryCodeForTypes = true
+typeCheckingMode = "basic"
+reportUnusedImport = "warning"
+reportUnusedVariable = "warning"
+reportDuplicateImport = "error"
+reportPrivateUsage = "warning"
+reportDeprecated = "warning"
+reportInconsistentConstructor = "error"
+reportMissingSuperCall = "error"
+reportUninitializedInstanceVariable = "error"
+reportUnnecessaryCast = "warning"
+reportUnnecessaryComparison = "warning"
+reportImplicitStringConcatenation = "warning"
+exclude = ["**/notebooks/"]
