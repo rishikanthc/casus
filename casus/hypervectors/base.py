@@ -2,7 +2,7 @@ import equinox as eqx  # https://github.com/patrick-kidger/equinox
 import jax.numpy as jnp
 import quax
 from jax import core
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 
 
 class HV(quax.ArrayValue, ABC):
@@ -15,6 +15,10 @@ class HV(quax.ArrayValue, ABC):
 
     def materialise(self):
         return self.array
+
+    @abstractclassmethod
+    def empty(cls, shape) -> "HV":
+        raise NotImplementedError
 
     @abstractmethod
     def __add__(self, other: "HV") -> "HV":

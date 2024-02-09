@@ -39,6 +39,7 @@ def __(RFF, data, jnp):
     encoder = RFF(1, 2048, bw)
     _hv = encoder(data)
     p = _hv.set()
+    _hv.dtype
     return bw, encoder, p, scotts_rule
 
 
@@ -57,6 +58,70 @@ def __(bw, encoder, eval, holo, jnp, norm, p):
     )
     _p1 * _p2
     return eval_hv, gt, probs
+
+
+@app.cell
+def __():
+    from casus.ml import Centroid
+
+    return (Centroid,)
+
+
+@app.cell
+def __():
+    from torchvision.datasets import MNIST
+    from torchvision import transforms
+    from torch.utils.data import DataLoader
+
+    return DataLoader, MNIST, transforms
+
+
+@app.cell
+def __(DataLoader, MNIST, transforms):
+    train_ds = MNIST(
+        root="data", train=True, download=True, transform=transforms.ToTensor()
+    )
+
+    train_dl = DataLoader(train_ds, batch_size=512, shuffle=True)
+    return train_dl, train_ds
+
+
+@app.cell
+def __(Centroid, RFF, jnp, scotts_rule, train_dl):
+    _bw = 0.3081 * scotts_rule(60000, 784) * jnp.eye(784)
+    mnist_encoder = RFF(784, 2048, _bw)
+    model = Centroid(10, mnist_encoder)
+
+    for idx, batch in enumerate(train_dl):
+        x, y = batch
+        x = x.numpy().reshape(-1, 784)
+        y = y.numpy()
+
+        model.train(x, y)
+        print(idx)
+    return batch, idx, mnist_encoder, model, x, y
+
+
+@app.cell
+def __():
+    import marimo as mo
+
+    return (mo,)
+
+
+@app.cell
+def __():
+    return
+
+
+@app.cell
+def __():
+    return
+
+
+@app.cell
+def __():
+    return
 
 
 @app.cell

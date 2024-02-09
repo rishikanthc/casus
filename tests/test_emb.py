@@ -6,7 +6,7 @@ import numpy as np
 @pt.mark.emb
 def test_RandomProjection():
     encoder = RandomProjection(10, 2048)
-    assert encoder.projection.shape == (10, 2048)
+    assert encoder.projection.shape == (2048, 10)
 
 
 @pt.mark.emb

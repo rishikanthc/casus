@@ -14,11 +14,11 @@ class RandomProjection(eqx.Module):
 
     def __init__(self, features: int, dimensions: int):
         super().__init__()
-        self.projection = np.random.normal(size=(features, dimensions))  # type: ignore
+        self.projection = np.random.normal(size=(dimensions, features))  # type: ignore
 
     @jax.jit
     def _proj(self, x: ArrayLike) -> ArrayLike:
-        _vec = einsum(x, self.projection, "b f, f d -> b d")
+        _vec = einsum(x, self.projection, "b f,d f -> b d")
 
         return _vec
 

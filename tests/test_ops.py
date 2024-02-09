@@ -93,3 +93,12 @@ def test_fourier_mops():
     assert _c.shape == (1, 4096)
     _s = _c.csim(_a)
     assert jnp.isclose(jnp.mean(_s), 0.0, atol=1e-1), f"{jnp.mean(_s)}"
+
+
+@pt.mark.hv
+def test_empty():
+    a = Fourier.empty((10, 2048))
+    assert a.shape == (10, 2048)
+
+    a = MAP.empty((10, 2048))
+    assert a.shape == (10, 2048)

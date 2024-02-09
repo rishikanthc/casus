@@ -26,6 +26,9 @@ fire = "*"
 marimo = "^0.2.3"
 holoviews = "^1.18.2"
 bokeh = "^3.3.4"
+torch = "^2.2.0"
+torchvision = "^0.17.0"
+alive-progress = "^3.1.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -52,4 +55,7 @@ exclude = ["**/notebooks/"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-markers = ["hv", "emb"]
+markers = ["hv", "emb", "ml"]
+
+[tool.poetry.scripts]
+t-mnist = "tests.test_ml:main"

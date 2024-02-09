@@ -1,6 +1,7 @@
 from .hypervectors import HV, MAP, Fourier
 from .ops import rearrange, reduce, repeat, pack, unpack, einsum
 from casus import encoders
+from casus import ml
 
 __all__ = [
     "HV",
@@ -13,4 +14,5 @@ __all__ = [
     "unpack",
     "einsum",
     "encoders",
+    "ml",
 ]

@@ -48,6 +48,10 @@ class MAP(HV):
 
         return vecs
 
+    @classmethod
+    def empty(cls, shape) -> "MAP":
+        return cls(array=jnp.zeros(shape))
+
     @staticmethod
     def default(
         primitive: core.Primitive,

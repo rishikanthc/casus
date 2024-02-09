@@ -50,6 +50,10 @@ class Fourier(HV):
 
         return vecs
 
+    @classmethod
+    def empty(cls, shape) -> "Fourier":
+        return cls(array=jnp.zeros(shape))
+
     @staticmethod
     def default(
         primitive: core.Primitive,
