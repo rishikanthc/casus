@@ -14,6 +14,7 @@ equinox = "*"
 numpy = "*"
 loguru = "*"
 einops = "^0.7.0"
+quax = "^0.0.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
@@ -22,6 +23,9 @@ ruff = "*"
 pre-commit = "*"
 pytest = "*"
 fire = "*"
+marimo = "^0.2.3"
+holoviews = "^1.18.2"
+bokeh = "^3.3.4"
 
 [build-system]
 requires = ["poetry-core"]
@@ -44,3 +48,8 @@ reportUnnecessaryCast = "warning"
 reportUnnecessaryComparison = "warning"
 reportImplicitStringConcatenation = "warning"
 exclude = ["**/notebooks/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+markers = ["hv"]
