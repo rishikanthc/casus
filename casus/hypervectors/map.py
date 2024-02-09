@@ -90,7 +90,7 @@ class MAP(HV):
         return MAP(array=res)
 
     def __invert__(self) -> "MAP":
-        return -self
+        return self
 
     def __rshift__(self, shifts: int) -> "MAP":
         return MAP(array=jnp.roll(self.array, shifts, axis=-1))
