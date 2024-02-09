@@ -5,7 +5,7 @@ from jaxtyping import Array, ArrayLike
 from typing import Sequence
 import equinox as eqx
 import quax
-from einops import einsum
+from einops import einsum, reduce
 import numpy as np
 
 
@@ -44,7 +44,7 @@ class MAP(HV):
         super().__init__(_data)
 
     def _init(self, shape: tuple[int, ...]):
-        vecs = np.random.binomial(1, 0.5, size=shape)
+        vecs = 2 * np.random.binomial(1, 0.5, size=shape) - 1
 
         return vecs
 
@@ -101,15 +101,15 @@ class MAP(HV):
     def __getitem__(self, item: int | slice) -> "MAP":
         return MAP(array=self.array[item])
 
-    def dot(self, other: "MAP") -> Array:
-        _dot = einsum(self.array, other.array, "i j,i j->i")
+    # def dot(self, other: "MAP") -> Array:
+    #     _dot = einsum(self.array, other.array, "i j,i j->i")
 
-        return _dot
+    #     return _dot
 
-    def dota(self, other: "MAP") -> Array:
-        _dotm = einsum(self.array, other.array, "m d, n d->m n")
+    # def dota(self, other: "MAP") -> Array:
+    #     _dotm = einsum(self.array, other.array, "m d, n d->m n")
 
-        return _dotm
+    #     return _dotm
 
     def csim(self, other: "MAP") -> Array:
         _a = self.array / jnp.linalg.norm(self.array, axis=-1, keepdims=True)
@@ -124,3 +124,11 @@ class MAP(HV):
         csim = einsum(_a, _b, "m d,n d->m n")
 
         return csim
+
+    def set(self) -> "MAP":
+        _res = reduce(self.array, "i j->1 j", "sum")
+        return MAP(array=_res)
+
+    def mbind(self) -> "MAP":
+        _res = reduce(self.array, "i j->1 j", "prod")
+        return MAP(array=_res)

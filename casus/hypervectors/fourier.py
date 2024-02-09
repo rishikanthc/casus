@@ -5,7 +5,7 @@ from jaxtyping import Array, ArrayLike
 from typing import Sequence
 import equinox as eqx
 import quax
-from einops import einsum
+from einops import einsum, reduce
 import numpy as np
 
 __all__ = ["Fourier"]
@@ -127,3 +127,11 @@ class Fourier(HV):
         csim = einsum(_a, _b, "m d,n d->m n")
 
         return csim
+
+    def set(self) -> "Fourier":
+        _res = reduce(self.array, "i j-> 1 j", "sum")
+        return Fourier(array=_res)
+
+    def mbind(self) -> "Fourier":
+        _res = reduce(self.array, "i j-> 1 j", "prod")
+        return Fourier(array=_res)

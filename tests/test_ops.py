@@ -37,15 +37,34 @@ def test_basic():
 
     assert _c.shape == (100, 200, 4), f"{ps}"
 
+
+@pt.mark.hv
+def test_sanity():
     _a = MAP((10, 4096))
     _b = MAP((10, 4096))
 
     _c = _a.csim(_b)
     assert _c.shape == (10,)
-    assert jnp.isclose(jnp.mean(_c), 0.5, atol=1e-1), f"{jnp.mean(_c)}"
+    assert jnp.isclose(jnp.mean(_c), 0.0, atol=1e-1), f"{jnp.mean(_c)}"
 
-    _c = _a.csima(_b)
-    assert _c.shape == (10, 10)
+    _d = _a * _b
+    _s = _d.csim(_a)
+    assert jnp.isclose(jnp.mean(_s), 0.0, atol=1e-1), f"{jnp.mean(_s)}"
+
+
+@pt.mark.hv
+def test_set_mbind():
+    _a = MAP((10, 4096))
+
+    _c = _a.set()
+    assert _c.shape == (1, 4096)
+    _s = _c.csim(_a)
+    assert jnp.mean(_s) > 0.3, f"{jnp.mean(_s)}"
+
+    _c = _a.mbind()
+    assert _c.shape == (1, 4096)
+    _s = _c.csim(_a)
+    assert jnp.isclose(jnp.mean(_s), 0.0, atol=1e-1), f"{jnp.mean(_s)}"
 
 
 @pt.mark.hv
@@ -59,3 +78,18 @@ def test_fourier():
 
     _c = _a.dota(_b)
     assert _c.shape == (10, 10)
+
+
+@pt.mark.hv
+def test_fourier_mops():
+    _a = Fourier((10, 4096))
+
+    _c = _a.set()
+    assert _c.shape == (1, 4096)
+    _s = _c.csim(_a)
+    assert jnp.mean(_s) > 0.3, f"{jnp.mean(_s)}"
+
+    _c = _a.mbind()
+    assert _c.shape == (1, 4096)
+    _s = _c.csim(_a)
+    assert jnp.isclose(jnp.mean(_s), 0.0, atol=1e-1), f"{jnp.mean(_s)}"

@@ -42,3 +42,11 @@ class HV(quax.ArrayValue, ABC):
 
     def __len__(self) -> int:
         return len(self.array)
+
+    @abstractmethod
+    def set(self) -> "HV":
+        raise NotImplementedError
+
+    @abstractmethod
+    def mbind(self) -> "HV":
+        raise NotImplementedError
