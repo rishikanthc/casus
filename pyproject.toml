@@ -52,4 +52,4 @@ exclude = ["**/notebooks/"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-markers = ["hv"]
+markers = ["hv", "emb"]
