@@ -61,13 +61,15 @@ class RFF(eqx.Module):
 
         key, subkey = jax.random.split(key)
         self.projection = jax.random.normal(key, (dimensions, features)) @ _scale
-        self.bias = jax.random.uniform(subkey, (features,), minval=0, maxval=2 * jnp.pi)
+        self.bias = jax.random.uniform(
+            subkey, (dimensions,), minval=0, maxval=2 * jnp.pi
+        )
 
     @jax.jit
     def _proj(self, x: Array) -> Array:
         _proj = einsum(x, self.projection, "b f, d f -> b d")
         _cos = jnp.cos(_proj + self.bias)
-        _vec = _cos * jnp.sqrt(2 / self.projection.shape[-1])
+        _vec = _cos * jnp.sqrt(2 / self.projection.shape[0])
 
         return _vec
 

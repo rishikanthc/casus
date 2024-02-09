@@ -13,7 +13,7 @@ def test_RandomProjection():
 def test_RFF():
     encoder = RFF(10, 2048, 1.0)
     assert encoder.projection.shape == (2048, 10)
-    assert encoder.bias.shape == (10,)
+    assert encoder.bias.shape == (2048,)
 
     encoder = RFF(1, 2048, 1.0)
     assert encoder.projection.shape == (2048, 1)
@@ -22,6 +22,7 @@ def test_RFF():
     assert data.shape == (2000, 1)
 
     _x = encoder(data)
+    _ = _x.set()
 
     _eval = np.linspace(-5, 5, 1000)[:, None]
     _e = encoder(_eval)
