@@ -1,5 +1,5 @@
 import pytest as pt
-from casus import MAP
+from casus import MAP, Fourier
 from casus import rearrange, pack
 import jax
 import jax.numpy as jnp
@@ -39,13 +39,23 @@ def test_basic():
 
     _a = MAP((10, 4096))
     _b = MAP((10, 4096))
-    _c = _a.dot(_b)
-    assert _c.shape == (10,)
-    assert jnp.mean(_c) < 0.1, f"{jnp.mean(_c)}"
 
     _c = _a.csim(_b)
     assert _c.shape == (10,)
-    assert jnp.mean(_c) < 0.1, f"{jnp.mean(_c)}"
+    assert jnp.isclose(jnp.mean(_c), 0.5, atol=1e-1), f"{jnp.mean(_c)}"
 
     _c = _a.csima(_b)
+    assert _c.shape == (10, 10)
+
+
+@pt.mark.hv
+def test_fourier():
+    _a = Fourier((10, 4096))
+    _b = Fourier((10, 4096))
+
+    _c = _a.csim(_b)
+    assert _c.shape == (10,)
+    assert jnp.isclose(jnp.mean(_c), 0.0, atol=1e-1), f"{jnp.mean(_c)}"
+
+    _c = _a.dota(_b)
     assert _c.shape == (10, 10)
