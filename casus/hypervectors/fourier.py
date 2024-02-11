@@ -7,6 +7,7 @@ import equinox as eqx
 import quax
 from einops import einsum, reduce
 import numpy as np
+import jax
 
 __all__ = ["Fourier"]
 
@@ -79,21 +80,25 @@ class Fourier(HV):
         else:
             return Fourier(array=out)
 
+    @jax.jit
     def __add__(self, other: "Fourier") -> "Fourier":
         return quax.quaxify(_fourier_add)(self, other)  # type: ignore
 
+    @jax.jit
     def __sub__(self, other: "Fourier") -> "Fourier":
         return quax.quaxify(_fourier_add)(self, -other)  # type: ignore
 
+    @jax.jit
     def __mul__(self, other: "Fourier") -> "Fourier":
         return quax.quaxify(_fourier_mul)(self, other)  # type: ignore
 
+    @jax.jit
     def __truediv__(self, other: "Fourier") -> "Fourier":
         return quax.quaxify(_fourier_div)(self, other)  # type: ignore
 
     def __neg__(self) -> "Fourier":
-        res = 1 / self.array
-        return Fourier(array=res)
+        res = quax.quaxify(_fourier_mul)(self, -1)  # type: ignore
+        return res
 
     def __invert__(self) -> "Fourier":
         res = 1 / self.array
@@ -108,16 +113,19 @@ class Fourier(HV):
     def __getitem__(self, item: int | slice) -> "Fourier":
         return Fourier(array=self.array[item])
 
+    @jax.jit
     def dot(self, other: "Fourier") -> Array:
         _dot = einsum(self.array, other.array, "i j,i j->i")
 
         return _dot
 
+    @jax.jit
     def dota(self, other: "Fourier") -> Array:
         _dotm = einsum(self.array, other.array, "m d, n d->m n")
 
         return _dotm
 
+    @jax.jit
     def csim(self, other: "Fourier") -> Array:
         _a = self.array / jnp.linalg.norm(self.array, axis=-1, keepdims=True)
         _b = other.array / jnp.linalg.norm(other.array, axis=-1, keepdims=True)
@@ -125,6 +133,7 @@ class Fourier(HV):
 
         return csim
 
+    @jax.jit
     def csima(self, other: "Fourier") -> Array:
         _a = self.array / jnp.linalg.norm(self.array, axis=-1, keepdims=True)
         _b = other.array / jnp.linalg.norm(other.array, axis=-1, keepdims=True)
@@ -132,10 +141,12 @@ class Fourier(HV):
 
         return csim
 
+    @jax.jit
     def set(self) -> "Fourier":
         _res = reduce(self.array, "i j-> 1 j", "sum")
         return Fourier(array=_res)
 
+    @jax.jit
     def mbind(self) -> "Fourier":
         _res = reduce(self.array, "i j-> 1 j", "prod")
         return Fourier(array=_res)

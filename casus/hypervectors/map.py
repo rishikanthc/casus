@@ -7,6 +7,7 @@ import equinox as eqx
 import quax
 from einops import einsum, reduce
 import numpy as np
+import jax
 
 
 def _map_add(x: ArrayLike, y: ArrayLike) -> ArrayLike:
@@ -77,21 +78,26 @@ class MAP(HV):
         else:
             return MAP(array=out)
 
+    @jax.jit
     def __add__(self, other: "MAP") -> "MAP":
         return quax.quaxify(_map_add)(self, other)  # type: ignore
 
+    @jax.jit
     def __sub__(self, other: "MAP") -> "MAP":
         return quax.quaxify(_map_add)(self, -other)  # type: ignore
 
+    @jax.jit
     def __mul__(self, other: "MAP") -> "MAP":
         return quax.quaxify(_map_mul)(self, other)  # type: ignore
 
+    @jax.jit
     def __truediv__(self, other: "MAP") -> "MAP":
         return quax.quaxify(_map_div)(self, other)  # type: ignore
 
+    @jax.jit
     def __neg__(self) -> "MAP":
         res = quax.quaxify(_map_mul)(self, -1)  # type: ignore
-        return MAP(array=res)
+        return res
 
     def __invert__(self) -> "MAP":
         return self
@@ -115,6 +121,7 @@ class MAP(HV):
 
     #     return _dotm
 
+    @jax.jit
     def csim(self, other: "MAP") -> Array:
         _a = self.array / jnp.linalg.norm(self.array, axis=-1, keepdims=True)
         _b = other.array / jnp.linalg.norm(other.array, axis=-1, keepdims=True)
@@ -122,6 +129,7 @@ class MAP(HV):
 
         return csim
 
+    @jax.jit
     def csima(self, other: "MAP") -> Array:
         _a = self.array / jnp.linalg.norm(self.array, axis=-1, keepdims=True)
         _b = other.array / jnp.linalg.norm(other.array, axis=-1, keepdims=True)
@@ -129,10 +137,12 @@ class MAP(HV):
 
         return csim
 
+    @jax.jit
     def set(self) -> "MAP":
         _res = reduce(self.array, "i j->1 j", "sum")
         return MAP(array=_res)
 
+    @jax.jit
     def mbind(self) -> "MAP":
         _res = reduce(self.array, "i j->1 j", "prod")
         return MAP(array=_res)

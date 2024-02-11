@@ -14,7 +14,7 @@ class RandomProjection(eqx.Module):
 
     def __init__(self, features: int, dimensions: int):
         super().__init__()
-        self.projection = np.random.normal(size=(dimensions, features))  # type: ignore
+        self.projection = np.random.normal(scale=10, size=(dimensions, features))  # type: ignore
 
     @jax.jit
     def _proj(self, x: ArrayLike) -> ArrayLike:
